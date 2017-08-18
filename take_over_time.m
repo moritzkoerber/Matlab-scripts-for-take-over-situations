@@ -3,7 +3,7 @@
 clear all 
 
 %% Schleife bilden
-for n = 21:40;
+for n = 1:40;
     
 % clearvars('*','-except','n','Zeitspanne.(Personenbezeichnung)') 
     
@@ -17,9 +17,9 @@ end
 %% Laden der relevanten Spalten (Messzeitpunkt, Streckenmeter, Bremspedalstellung, Gaspedalstellung, Lenkung)
 
 % if n==3
-ds = datastore(['H:\Silabdaten\',Personenbezeichnung,'.1.asc'],'TreatAsMissing','NA','MissingValue',0);
+ds = datastore(['C:\Users\Mo\Desktop\Eva\Michi TOT\Silabdaten\',Personenbezeichnung,'.1.asc'],'TreatAsMissing','NA','MissingValue',0);
 
-ds.SelectedVariableNames = {'Var1','Var4','Var19','Var18','Var21','Var8'};
+ds.SelectedVariableNames = {'Var1','Var4','Var19','Var18','Var21','Var8','Var28','Var14'};
 
 Vars = readall(ds);
 
@@ -34,38 +34,33 @@ CourseID = cell2mat(table2cell(Vars(1:end,6)));
 
 Lenkradwinkel_deg = Lenkradwinkel_rad*(360/(2*pi));
 
-% Abschnitte definieren
+t3 = CourseID ==3;
 
-for i = 1:length(Streckenmeter)-1
-   Diff_Meter_Zeitschritt(i) =  abs(Streckenmeter(i)-Streckenmeter(i+1) > 100); 
-       
-end
 
-Abschnitte = find(Diff_Meter_Zeitschritt);
 
 %% Course t3 aus Variablen herausschneiden
 
-Streckenmeter = Streckenmeter(Abschnitte(1)+1:Abschnitte(2));
-Lenkradwinkel_rad = Lenkradwinkel_rad(Abschnitte(1)+1:Abschnitte(2));
-Bremspedalstellung = Bremspedalstellung(Abschnitte(1)+1:Abschnitte(2));
-Gaspedalstellung = Gaspedalstellung(Abschnitte(1)+1:Abschnitte(2));
-Lenkradwinkel_deg = Lenkradwinkel_deg(Abschnitte(1)+1:Abschnitte(2));
+Streckenmeter_t3 = Streckenmeter(t3);
+Lenkradwinkel_rad_t3 = Lenkradwinkel_rad(t3);
+Bremspedalstellung_t3 = Bremspedalstellung(t3);
+Gaspedalstellung_t3 = Gaspedalstellung(t3);
+Lenkradwinkel_deg_t3 = Lenkradwinkel_deg(t3);
 
 %% Zeilennummer von TOR
 
-[bla index_TOR] = min(abs(Streckenmeter-8223)); 
+[bla index_TOR] = min(abs(Streckenmeter_t3-8223)); 
 Zeilennummer_TOR = index_TOR(1);
 
 %% Zeilennummer vor TOR
 
-[bla index_vor_TOR] = min(abs(Streckenmeter-7900)); 
+[bla index_vor_TOR] = min(abs(Streckenmeter_t3-7900)); 
 Zeilennummer_vor_TOR = index_vor_TOR(1);
 
 %% Schneiden der Variablen Lenkung, Bremse und Gaspedal
 
-Lenkradwinkel_deg_ab_TOR = Lenkradwinkel_deg(Zeilennummer_vor_TOR:end);
-Bremspedalstellung_ab_TOR = Bremspedalstellung(Zeilennummer_vor_TOR:end);
-Gaspedalstellung_ab_TOR = Gaspedalstellung(Zeilennummer_vor_TOR:end);
+Lenkradwinkel_deg_ab_TOR = Lenkradwinkel_deg_t3(Zeilennummer_vor_TOR:end);
+Bremspedalstellung_ab_TOR = Bremspedalstellung_t3(Zeilennummer_vor_TOR:end);
+Gaspedalstellung_ab_TOR = Gaspedalstellung_t3(Zeilennummer_vor_TOR:end);
 
 %% Zeilennummer Eingriff
 
@@ -90,7 +85,7 @@ Zeitspanne_bis_Eingriff = ((Eingriff-Zeilennummer_TOR)/120);
 
 Zeitspanne.(Personenbezeichnung) = Zeitspanne_bis_Eingriff;
 
-xlswrite('C:\Users\Michael\Desktop\Skript_Moritz\Situation 2.xlsx',Zeitspanne_bis_Eingriff,'Tabelle1',['F',num2str(1+n)]);
+xlswrite('C:\Users\Mo\Desktop\Situation 2_minTTC.xlsx',Zeitspanne_bis_Eingriff,'Tabelle1',['F',num2str(1+n)]);
 
 end
 disp('Analysis finished')
