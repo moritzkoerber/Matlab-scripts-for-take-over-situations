@@ -85,7 +85,7 @@ Zeitspanne_bis_Eingriff = ((Eingriff-Zeilennummer_TOR)/120);
 
 Zeitspanne.(Personenbezeichnung) = Zeitspanne_bis_Eingriff;
 
-xlswrite('C:\Users\Mo\Desktop\Situation 2_minTTC.xlsx',Zeitspanne_bis_Eingriff,'Tabelle1',['F',num2str(1+n)]);
+xlswrite('C:\Users\Mo\Desktop\Situation 2_tot.xlsx',Zeitspanne_bis_Eingriff,'Tabelle1',['F',num2str(1+n)]);
 
 end
 disp('Analysis finished')
