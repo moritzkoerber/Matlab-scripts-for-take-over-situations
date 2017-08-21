@@ -3,7 +3,7 @@
 clear all 
 
 %% Schleife bilden
-for n = 37;
+for n = 1:40;
     
 % clearvars('*','-except','n','Zeitspanne.(Personenbezeichnung)') 
     
@@ -63,12 +63,23 @@ CurrentLane_ab_TOR = CurrentLane_t3(Zeilennummer_vor_TOR:Zeilennummer_TOR);
 Streckenmeter_ab_TOR = Streckenmeter_t3(Zeilennummer_vor_TOR:Zeilennummer_TOR);
 speed_ab_TOR =speed_t3(Zeilennummer_vor_TOR:Zeilennummer_TOR);
 
-for i=1:length(HeadwayDistance_ab_TOR)
-   if  CurrentLane_ab_TOR(i) == 7 & speed_ab_TOR(i) ~= 0
+for i=1:length(speed_ab_TOR)  % check if participant braked to complete stop
+    if speed_ab_TOR(i) == 0
+        end_point=Streckenmeter_ab_TOR(i); %complete stop as limit for TTC calculation (situation solved)
+        break
+    else
+        end_point=8333; %obstacle as limit for TTC calculation
+    end
+end
+
+for i=1:length(speed_ab_TOR)
+   if  CurrentLane_ab_TOR(i) == 7 & speed_ab_TOR(i) ~= 0 & Streckenmeter_ab_TOR(i) <= end_point 
             current_position=Streckenmeter_ab_TOR(i);
             current_speed = speed_ab_TOR(i);
             minTTC(i)=(8333-current_position)/(current_speed/3.6);
-   end 
+   else
+       minTTC(i) = NaN;
+     end 
 end
 
 minTTC=min(minTTC);
