@@ -3,7 +3,7 @@
 clear all 
 
 %% Schleife bilden
-for n = 1:40;
+for n = 37;
     
 % clearvars('*','-except','n','Zeitspanne.(Personenbezeichnung)') 
     
@@ -63,18 +63,15 @@ CurrentLane_ab_TOR = CurrentLane_t3(Zeilennummer_vor_TOR:Zeilennummer_TOR);
 Streckenmeter_ab_TOR = Streckenmeter_t3(Zeilennummer_vor_TOR:Zeilennummer_TOR);
 speed_ab_TOR =speed_t3(Zeilennummer_vor_TOR:Zeilennummer_TOR);
 
-current_speed =100;
-minTTC = 1000;
 for i=1:length(HeadwayDistance_ab_TOR)
-   if  CurrentLane_ab_TOR(i) == 7
-        if 8333-Streckenmeter_ab_TOR(i) < minTTC
-        minTTC=Streckenmeter_ab_TOR(i);
-        current_speed = speed_ab_TOR(i);
-        end
+   if  CurrentLane_ab_TOR(i) == 7 & speed_ab_TOR(i) ~= 0
+            current_position=Streckenmeter_ab_TOR(i);
+            current_speed = speed_ab_TOR(i);
+            minTTC(i)=(8333-current_position)/(current_speed/3.6);
    end 
 end
 
-minTTC=(8333-minTTC)/(current_speed/3.6);
+minTTC=min(minTTC);
 xlswrite('C:\Users\Mo\Desktop\Situation 2_minTTC.xlsx',n,'Tabelle1',['A',num2str(1+n)]);
 xlswrite('C:\Users\Mo\Desktop\Situation 2_minTTC.xlsx',minTTC,'Tabelle1',['B',num2str(1+n)]);
 
